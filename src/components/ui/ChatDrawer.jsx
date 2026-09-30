@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ToolBadge } from './ToolBadge';
 import { PromptChips } from './PromptChips';
+import { FramedMessage } from './FramedMessage';
 
 export function ChatDrawer({
   isOpen,
@@ -157,15 +158,15 @@ export function ChatDrawer({
                         </div>
                       )}
 
-                      <div
-                        className={`rounded-2xl p-3.5 text-xs leading-relaxed ${
-                          msg.role === 'user'
-                            ? 'bg-gradient-to-r from-neon-magenta via-neon-purple to-neon-violet text-white rounded-br-none shadow-glow-neon font-medium'
-                            : 'bg-white/[0.03] border border-white/10 text-slate-200 rounded-bl-none font-normal whitespace-pre-wrap selection:bg-neon-magenta/30'
-                        }`}
-                      >
-                        {msg.text}
-                      </div>
+                      {msg.role === 'user' ? (
+                        <div className="rounded-2xl p-3.5 text-xs leading-relaxed bg-gradient-to-r from-neon-magenta via-neon-purple to-neon-violet text-white rounded-br-none shadow-glow-neon font-medium">
+                          {msg.text}
+                        </div>
+                      ) : (
+                        <div className="w-full">
+                          <FramedMessage text={msg.text} />
+                        </div>
+                      )}
                     </div>
 
                     {msg.role === 'user' && (
