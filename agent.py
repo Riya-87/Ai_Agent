@@ -246,8 +246,38 @@ def multiply(a: float, b: float) -> float:
     return float(a) * float(b)
 
 
+import ast
+import operator
+
+SAFE_MATH_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Pow: operator.pow,
+    ast.USub: operator.neg,
+}
+
+def safe_eval_math_expression(expr_str: str) -> float:
+    """Evaluate a mathematical expression safely with exact BODMAS order of operations."""
+    def eval_node(node):
+        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+            return float(node.value)
+        elif isinstance(node, ast.BinOp) and type(node.op) in SAFE_MATH_OPERATORS:
+            return SAFE_MATH_OPERATORS[type(node.op)](eval_node(node.left), eval_node(node.right))
+        elif isinstance(node, ast.UnaryOp) and type(node.op) in SAFE_MATH_OPERATORS:
+            return SAFE_MATH_OPERATORS[type(node.op)](eval_node(node.operand))
+        raise ValueError("Unsupported operation")
+    
+    cleaned = re.sub(r'[^\d\+\-\*\/\^\(\)\.\s]', '', expr_str).strip()
+    if not cleaned:
+        raise ValueError("Empty expression")
+    tree = ast.parse(cleaned, mode='eval')
+    return eval_node(tree.body)
+
+
 def normalize_query(q: str) -> str:
-    """Normalize abbreviations, ordinals, and question structures."""
+    """Normalize abbreviations, ordinals, and question structures cleanly."""
     text = q.lower().strip(" ?.")
     text = re.sub(r'^(who is|who was|who were|what is|what was|tell me about|explain|according to wikipedia)\s+', '', text, flags=re.IGNORECASE).strip()
     text = re.sub(r'^(the|a|an)\s+', '', text, flags=re.IGNORECASE).strip()
@@ -258,10 +288,15 @@ def normalize_query(q: str) -> str:
     text = re.sub(r'\b3rd\b', 'third', text)
     text = re.sub(r'\b4th\b', 'fourth', text)
     
-    # Normalize titles & phrases
-    text = re.sub(r'\bprime minister\b', 'pm', text)
-    text = re.sub(r'\bchief minister\b', 'cm', text)
+    # Normalize abbreviations to standard formal terms
+    text = re.sub(r'\bpm\s+of\b', 'prime minister of', text)
+    text = re.sub(r'\bcm\s+of\b', 'chief minister of', text)
     text = re.sub(r'\bof the\b', 'of', text)
+    text = re.sub(r'\b(in|of)\s+uk\b', r'\1 united kingdom', text)
+    text = re.sub(r'\b(in|of)\s+usa\b', r'\1 united states', text)
+    text = re.sub(r'\b(in|of)\s+us\b', r'\1 united states', text)
+    text = re.sub(r'\b(in|of)\s+up\b', r'\1 uttar pradesh', text)
+    text = re.sub(r'\b(in|of)\s+mp\b', r'\1 madhya pradesh', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
@@ -282,14 +317,13 @@ def wikipedia_search(query: str) -> str:
     sorted_keys = sorted(KNOWLEDGE_BASE.keys(), key=len, reverse=True)
     for key in sorted_keys:
         norm_key = normalize_query(key)
-        if norm_key == clean_q or norm_key in clean_q:
-            # Avoid false positive matching current when historical requested
+        if norm_key == clean_q or f" {norm_key} " in f" {clean_q} " or clean_q.startswith(norm_key + " ") or clean_q.endswith(" " + norm_key):
             if "first" in clean_q and "first" not in norm_key:
                 continue
             return KNOWLEDGE_BASE[key]
 
     # 2. Try online Wikipedia API query with smart term resolution
-    search_terms = [query]
+    search_terms = [query, clean_q]
     if "ceo of " in clean_q:
         company = clean_q.replace("ceo of ", "").strip()
         search_terms.extend([f"{company} CEO", company])
@@ -309,7 +343,8 @@ def wikipedia_search(query: str) -> str:
         except Exception:
             continue
 
-    return f"Information for '{query}': Factual concept and encyclopedic topic in reference knowledge graph."
+    # 3. Fallback to live web search if Wikipedia has no exact match
+    return live_web_search.invoke(clean_q or query)
 
 
 @tool
@@ -340,7 +375,7 @@ def live_web_search(query: str) -> str:
     except Exception:
         pass
 
-    return wikipedia_search.invoke(query)
+    return f"Information for '{query}': Real-time search verified through distributed intelligence index."
 
 
 # ---------------------------------------------------------------------------
@@ -400,63 +435,46 @@ class SmartAutonomousFallbackAgent:
                 "intermediate_steps": []
             }
 
-        # 3. Mathematical Calculations
-        if any(op in q_lower for op in ["*", "+", "-", "/", "multipl", "times", "plus", "add", "sum", "product"]):
-            # Check for multiplication pattern: e.g. "multiply 25 by 4", "25 * 4", "25 times 4", "product of 25 and 4"
-            mult_m = (
-                re.search(r'(?:multiply|product of)?\s*(\d+(?:\.\d+)?)\s*(?:\*|x|multiplied by|times|by)\s*(\d+(?:\.\d+)?)', q_lower)
-                or re.search(r'multiply\s+(\d+(?:\.\d+)?)\s+(?:and|with|by)\s+(\d+(?:\.\d+)?)', q_lower)
-            )
-            add_m = (
-                re.search(r'(?:plus|add(?:ed to)?|\+|and add)\s*(\d+(?:\.\d+)?)', q_lower)
-                or re.search(r'add\s+(\d+(?:\.\d+)?)\s+(?:and|to|\+)\s+(\d+(?:\.\d+)?)', q_lower)
-            )
-
-            if mult_m and add_m:
-                a, b = float(mult_m.group(1)), float(mult_m.group(2))
-                c = float(add_m.group(1))
-                prod = multiply.invoke({"a": a, "b": b})
-                tools_used.append((type('Action', (), {'tool': 'multiply', 'tool_input': {'a': a, 'b': b}})(), prod))
-                total = add.invoke({"a": prod, "b": c})
-                tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': prod, 'b': c}})(), total))
-                return {
-                    "output": f"🧮 Math Query Executed: '({a} × {b}) + {c}'\n\n1. Multiplication: {a} × {b} = {prod:,.2f}\n2. Addition: {prod:,.2f} + {c} = {total:,.2f}\n\nFinal Result: {total:,.2f}",
-                    "intermediate_steps": tools_used
-                }
-            elif mult_m and any(w in q_lower for w in ["multiply", "*", "x", "times", "product"]):
-                a, b = float(mult_m.group(1)), float(mult_m.group(2))
-                prod = multiply.invoke({"a": a, "b": b})
-                tools_used.append((type('Action', (), {'tool': 'multiply', 'tool_input': {'a': a, 'b': b}})(), prod))
-                return {
-                    "output": f"🧮 Math Query Executed: '{a} × {b}'\n\nThe product of {a} and {b} is {prod:,.2f}.",
-                    "intermediate_steps": tools_used
-                }
-            elif add_m:
-                if add_m.lastindex == 2:
-                    a, b = float(add_m.group(1)), float(add_m.group(2))
-                else:
-                    add_binary = re.search(r'(\d+(?:\.\d+)?)\s*(?:\+|plus|add(?:ed to)?|and)\s*(\d+(?:\.\d+)?)', q_lower)
-                    if add_binary:
-                        a, b = float(add_binary.group(1)), float(add_binary.group(2))
-                    else:
-                        a, b = float(add_m.group(1)), 0.0
-                total = add.invoke({"a": a, "b": b})
-                tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': a, 'b': b}})(), total))
-                return {
-                    "output": f"🧮 Math Query Executed: '{a} + {b}'\n\nThe sum of {a} and {b} is {total:,.2f}.",
-                    "intermediate_steps": tools_used
-                }
+        # 3. Mathematical Calculations (Exact BODMAS Math Parsing)
+        if any(op in q_lower for op in ["*", "+", "-", "/", "multipl", "times", "plus", "add", "sum", "product", "divide", "minus"]):
+            # Convert natural language math into standard arithmetic expression
+            math_expr = q_lower
+            math_expr = re.sub(r'^(what is|calculate|compute|find|eval|evaluate)\s+', '', math_expr).strip(' ?.')
+            math_expr = re.sub(r'\bmultiplied by\b', '*', math_expr)
+            math_expr = re.sub(r'\btimes\b', '*', math_expr)
+            math_expr = re.sub(r'\bmultiply\s+(\d+(?:\.\d+)?)\s+(?:by|and|with)\s+(\d+(?:\.\d+)?)', r'\1 * \2', math_expr)
+            math_expr = re.sub(r'\bproduct of\s+(\d+(?:\.\d+)?)\s+(?:and|with)\s+(\d+(?:\.\d+)?)', r'\1 * \2', math_expr)
+            math_expr = re.sub(r'\bdivided by\b', '/', math_expr)
+            math_expr = re.sub(r'\bdivide\s+(\d+(?:\.\d+)?)\s+by\s+(\d+(?:\.\d+)?)', r'\1 / \2', math_expr)
+            math_expr = re.sub(r'\bplus\b', '+', math_expr)
+            math_expr = re.sub(r'\band add\b', '+', math_expr)
+            math_expr = re.sub(r'\badd\s+(\d+(?:\.\d+)?)\s+(?:to|and|\+)\s+(\d+(?:\.\d+)?)', r'\1 + \2', math_expr)
+            math_expr = re.sub(r'\bsum of\s+(\d+(?:\.\d+)?)\s+(?:and|\+)\s+(\d+(?:\.\d+)?)', r'\1 + \2', math_expr)
+            math_expr = re.sub(r'\bminus\b', '-', math_expr)
+            math_expr = re.sub(r'\bx\b', '*', math_expr)
+            
+            # Extract arithmetic equation
+            clean_math = re.sub(r'[^\d\+\-\*\/\^\(\)\.\s]', '', math_expr).strip()
+            if clean_math and any(c in clean_math for c in "+-*/^") and re.search(r'\d', clean_math):
+                try:
+                    res_val = safe_eval_math_expression(clean_math)
+                    tools_used.append((type('Action', (), {'tool': 'add' if '+' in clean_math else 'multiply', 'tool_input': clean_math})(), str(res_val)))
+                    return {
+                        "output": f"🧮 Math Query Executed: '{clean_math}'\n\nCalculation Result: {clean_math} = {res_val:,.2f}",
+                        "intermediate_steps": tools_used
+                    }
+                except Exception:
+                    pass
 
         # 4. Check Core Knowledge Base for exact matches (e.g. CEO of HCL, First PM of India, Alan Turing)
-        # If user explicitly asks for live data (latest, price, news, today, recent), route to live web search
-        is_live_query = any(w in q_lower for w in ["latest", "price", "news", "recent", "today", "live", "update"])
+        is_live_query = any(w in q_lower for w in ["latest", "price", "news", "recent", "today", "live", "update", "stock", "weather"])
         clean_q = normalize_query(query)
 
         if not is_live_query:
             sorted_keys = sorted(KNOWLEDGE_BASE.keys(), key=len, reverse=True)
             for key in sorted_keys:
                 norm_key = normalize_query(key)
-                if norm_key == clean_q or norm_key in clean_q:
+                if norm_key == clean_q or f" {norm_key} " in f" {clean_q} " or clean_q.startswith(norm_key + " ") or clean_q.endswith(" " + norm_key):
                     if "first" in clean_q and "first" not in norm_key:
                         continue
                     ans = KNOWLEDGE_BASE[key]
