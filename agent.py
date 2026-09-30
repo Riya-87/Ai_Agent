@@ -1,9 +1,9 @@
 """
-AI Agent with LangChain, Groq, Wikipedia, Tavily, and Custom Tools
-===================================================================
+AI Agent with LangChain, Groq, Wikipedia, Tavily, DateTime, and Custom Tools
+=============================================================================
 Features:
 - Plain text output format (no complex markdown tables or formatting)
-- Explicit display of tools used (Wikipedia, Tavily, Add, Multiply)
+- Explicit display of tools used (Wikipedia, Tavily, Add, Multiply, DateTime)
 - LLM Engine: ChatGroq (llama-3.3-70b-versatile / llama-3.1-8b-instant)
 - Built-in encyclopedic knowledge base & resilient fallback engine
 """
@@ -11,6 +11,7 @@ Features:
 import os
 import re
 import sys
+from datetime import datetime
 import wikipedia
 from dotenv import load_dotenv
 
@@ -33,7 +34,36 @@ wikipedia.set_user_agent("AIAgentTutorial/1.0 (contact@example.com)")
 # Offline / Core Knowledge Dictionary (Sorted by specificity)
 # ---------------------------------------------------------------------------
 KNOWLEDGE_BASE = {
-    # 1. Historical Leaders & Firsts (Most specific first)
+    # 1. Corporate & Tech Executives / CEOs
+    "ceo of hcl": "C Vijayakumar is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies). He was appointed CEO in October 2016 and MD in July 2021.",
+    "hcl ceo": "C Vijayakumar is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies). He was appointed CEO in October 2016 and MD in July 2021.",
+    "founder of hcl": "Shiv Nadar is the founder of HCL Group and HCL Technologies, established in 1976.",
+    "ceo of google": "Sundar Pichai is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google.",
+    "google ceo": "Sundar Pichai is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google.",
+    "ceo of microsoft": "Satya Nadella is the Chairman and Chief Executive Officer of Microsoft.",
+    "microsoft ceo": "Satya Nadella is the Chairman and Chief Executive Officer of Microsoft.",
+    "ceo of apple": "Tim Cook is the Chief Executive Officer of Apple Inc., having served in this role since 2011.",
+    "apple ceo": "Tim Cook is the Chief Executive Officer of Apple Inc., having served in this role since 2011.",
+    "ceo of tesla": "Elon Musk is the Chief Executive Officer of Tesla, Inc., and chief engineer of SpaceX.",
+    "tesla ceo": "Elon Musk is the Chief Executive Officer of Tesla, Inc., and chief engineer of SpaceX.",
+    "ceo of meta": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook).",
+    "meta ceo": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook).",
+    "ceo of openai": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence research and deployment company.",
+    "openai ceo": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence research and deployment company.",
+    "ceo of nvidia": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA.",
+    "nvidia ceo": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA.",
+    "ceo of amazon": "Andy Jassy is the President and Chief Executive Officer of Amazon.",
+    "amazon ceo": "Andy Jassy is the President and Chief Executive Officer of Amazon.",
+    "ceo of infosys": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys.",
+    "infosys ceo": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys.",
+    "ceo of tcs": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS).",
+    "tcs ceo": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS).",
+    "ceo of wipro": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro.",
+    "wipro ceo": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro.",
+    "chairman of reliance": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries.",
+    "reliance ceo": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries.",
+
+    # 2. Historical Leaders & Firsts (Most specific first)
     "first pm of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964. He was a central figure in Indian politics before and after independence.",
     "first prime minister of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964. He was a central figure in Indian politics before and after independence.",
     "who was the first pm of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964.",
@@ -46,7 +76,7 @@ KNOWLEDGE_BASE = {
     "father of indian constitution": "Dr. B. R. Ambedkar was the chief architect and chairman of the Drafting Committee of the Constitution of India.",
     "father of the constitution of india": "Dr. B. R. Ambedkar was the chief architect and chairman of the Drafting Committee of the Constitution of India.",
     
-    # 2. Current Leadership & Geopolitics
+    # 3. Current Leadership & Geopolitics
     "cm of up": "The Chief Minister of Uttar Pradesh is Yogi Adityanath (serving since March 19, 2017). Uttar Pradesh is India's most populous state, with its capital located in Lucknow.",
     "chief minister of uttar pradesh": "The Chief Minister of Uttar Pradesh is Yogi Adityanath (serving since March 19, 2017). Uttar Pradesh is India's most populous state, with its capital located in Lucknow.",
     "current pm of india": "The current Prime Minister of India is Narendra Modi (serving since May 2014).",
@@ -61,7 +91,7 @@ KNOWLEDGE_BASE = {
     "capital of uk": "The capital of the United Kingdom is London.",
     "capital of france": "The capital of France is Paris.",
 
-    # 3. Science, Technology, Crypto & AI
+    # 4. Science, Technology, Crypto & AI
     "alan turing": "Alan Turing (1912–1954) was an English mathematician, computer scientist, logician, and cryptanalyst. Widely considered the father of theoretical computer science and artificial intelligence, he played a pivotal role in cracking the Enigma cipher during World War II.",
     "bitcoin": "Bitcoin is a decentralized digital cryptocurrency created in 2008 by Satoshi Nakamoto. It uses blockchain distributed ledger technology to enable peer-to-peer transactions without central intermediaries.",
     "satoshi nakamoto": "Satoshi Nakamoto is the pseudonymous creator of Bitcoin and author of the 2008 Bitcoin whitepaper.",
@@ -76,6 +106,20 @@ KNOWLEDGE_BASE = {
 # ---------------------------------------------------------------------------
 # 1. Custom Tools with @tool Decorator
 # ---------------------------------------------------------------------------
+@tool
+def get_current_date_time(query: str = "now") -> str:
+    """Get the current live date, day of the week, and time.
+
+    Args:
+        query (str): Temporal query term.
+
+    Returns:
+        str: Current formatted live date and time.
+    """
+    now = datetime.now()
+    return now.strftime("Today is %A, %B %d, %Y. Current time: %I:%M %p")
+
+
 @tool
 def add(a: float, b: float) -> float:
     """Add two numbers together.
@@ -107,8 +151,8 @@ def multiply(a: float, b: float) -> float:
 def normalize_query(q: str) -> str:
     """Normalize abbreviations, ordinals, and question structures."""
     text = q.lower().strip(" ?.")
-    # Strip question intros
     text = re.sub(r'^(who is|who was|who were|what is|what was|tell me about|explain|according to wikipedia)\s+', '', text, flags=re.IGNORECASE).strip()
+    text = re.sub(r'^(the|a|an)\s+', '', text, flags=re.IGNORECASE).strip()
     
     # Normalize ordinals
     text = re.sub(r'\b1st\b', 'first', text)
@@ -146,20 +190,26 @@ def wikipedia_search(query: str) -> str:
                 continue
             return KNOWLEDGE_BASE[key]
 
-    # 2. Try online Wikipedia API query
-    try:
-        results = wikipedia.search(query, results=3)
-        if results:
-            page = wikipedia.page(results[0], auto_suggest=False)
-            return f"Title: {page.title}\nSummary: {page.summary[:1500]}"
-    except wikipedia.DisambiguationError as e:
+    # 2. Try online Wikipedia API query with smart term resolution
+    search_terms = [query]
+    if "ceo of " in clean_q:
+        company = clean_q.replace("ceo of ", "").strip()
+        search_terms.extend([f"{company} CEO", company])
+    elif "founder of " in clean_q:
+        company = clean_q.replace("founder of ", "").strip()
+        search_terms.extend([f"{company} founder", company])
+
+    for term in search_terms:
         try:
-            page = wikipedia.page(e.options[0], auto_suggest=False)
-            return f"Title: {page.title}\nSummary: {page.summary[:1500]}"
+            results = wikipedia.search(term, results=3)
+            if results:
+                for res_title in results:
+                    page = wikipedia.page(res_title, auto_suggest=False)
+                    summary = page.summary.strip()
+                    if summary and len(summary) > 20:
+                        return f"Title: {page.title}\nSummary: {summary[:1500]}"
         except Exception:
-            return f"Multiple matches found for '{query}': {', '.join(e.options[:5])}"
-    except Exception:
-        pass
+            continue
 
     return f"Information for '{query}': Factual concept and encyclopedic topic in reference knowledge graph."
 
@@ -180,7 +230,7 @@ def get_tools(tavily_api_key: str | None = None) -> list:
     except Exception:
         tavily_tool = None
 
-    tools = [wikipedia_search, add, multiply]
+    tools = [wikipedia_search, get_current_date_time, add, multiply]
     if tavily_tool:
         tools.insert(1, tavily_tool)
     return tools
@@ -199,23 +249,39 @@ class SmartAutonomousFallbackAgent:
         tools_used = []
         q_lower = query.lower()
 
-        # 1. Greetings & System Identity
+        # 1. Temporal Queries (Current Date & Time)
+        if any(w in q_lower for w in ["current date", "today's date", "date today", "what date", "current time", "what time", "what day is it", "day today"]):
+            date_res = get_current_date_time.invoke("now")
+            tools_used.append((type('Action', (), {'tool': 'get_current_date_time', 'tool_input': 'now'})(), date_res))
+            return {
+                "output": date_res,
+                "intermediate_steps": tools_used
+            }
+
+        # 2. Greetings & System Identity
         if q_lower in ["hi", "hello", "hey", "hola", "greetings", "hi there"]:
             return {
-                "output": "Hello! I am your Nexus Autonomous Multi-Tool Agent. I can search real-time web news with Tavily, retrieve encyclopedic knowledge with Wikipedia, and execute high-precision mathematical operations. What would you like to explore today?",
+                "output": "Hello! I am your Nexus Autonomous Multi-Tool Agent. I can search real-time web news with Tavily, retrieve encyclopedic knowledge with Wikipedia, inspect live dates and times, and execute high-precision mathematical operations. What would you like to explore today?",
                 "intermediate_steps": []
             }
 
         if "who are you" in q_lower or "what can you do" in q_lower:
             return {
-                "output": "I am Nexus AI, an autonomous multi-tool intelligence engine powered by LangChain. My capabilities include:\n\n• Wikipedia Encyclopedic Search: Biographies, leaders, concepts, history, science\n• Tavily Web Intelligence: Real-time search, news, breaking developments\n• Deterministic Math Core: Addition, multiplication, and complex numerical pipelines\n• DeFi & AI Reasoning: Protocol analysis and autonomous multi-hop queries",
+                "output": "I am Nexus AI, an autonomous multi-tool intelligence engine powered by LangChain. My capabilities include:\n\n• Wikipedia Encyclopedic Search: Biographies, leaders, CEOs, concepts, history\n• Live Temporal Engine: Current date, day, and time awareness\n• Tavily Web Intelligence: Real-time search, news, breaking developments\n• Deterministic Math Core: Addition, multiplication, and complex numerical pipelines\n• DeFi & AI Reasoning: Protocol analysis and autonomous multi-hop queries",
                 "intermediate_steps": []
             }
 
-        # 2. Mathematical Calculations
-        if any(op in q_lower for op in ["*", "+", "-", "/", "multiplied", "times", "plus", "add", "sum", "product"]):
-            mult_m = re.search(r'(\d+(?:\.\d+)?)\s*(?:\*|x|multiplied by|times)\s*(\d+(?:\.\d+)?)', q_lower)
-            add_m = re.search(r'(?:plus|add(?:ed to)?|\+)\s*(\d+(?:\.\d+)?)', q_lower)
+        # 3. Mathematical Calculations
+        if any(op in q_lower for op in ["*", "+", "-", "/", "multipl", "times", "plus", "add", "sum", "product"]):
+            # Check for multiplication pattern: e.g. "multiply 25 by 4", "25 * 4", "25 times 4", "product of 25 and 4"
+            mult_m = (
+                re.search(r'(?:multiply|product of)?\s*(\d+(?:\.\d+)?)\s*(?:\*|x|multiplied by|times|by)\s*(\d+(?:\.\d+)?)', q_lower)
+                or re.search(r'multiply\s+(\d+(?:\.\d+)?)\s+(?:and|with|by)\s+(\d+(?:\.\d+)?)', q_lower)
+            )
+            add_m = (
+                re.search(r'(?:plus|add(?:ed to)?|\+|and add)\s*(\d+(?:\.\d+)?)', q_lower)
+                or re.search(r'add\s+(\d+(?:\.\d+)?)\s+(?:and|to|\+)\s+(\d+(?:\.\d+)?)', q_lower)
+            )
 
             if mult_m and add_m:
                 a, b = float(mult_m.group(1)), float(mult_m.group(2))
@@ -228,7 +294,7 @@ class SmartAutonomousFallbackAgent:
                     "output": f"Calculation completed:\n1. Multiplication: {a} × {b} = {prod:,.2f}\n2. Addition: {prod:,.2f} + {c} = {total:,.2f}\n\nFinal Result: {total:,.2f}",
                     "intermediate_steps": tools_used
                 }
-            elif mult_m:
+            elif mult_m and any(w in q_lower for w in ["multiply", "*", "x", "times", "product"]):
                 a, b = float(mult_m.group(1)), float(mult_m.group(2))
                 prod = multiply.invoke({"a": a, "b": b})
                 tools_used.append((type('Action', (), {'tool': 'multiply', 'tool_input': {'a': a, 'b': b}})(), prod))
@@ -237,17 +303,22 @@ class SmartAutonomousFallbackAgent:
                     "intermediate_steps": tools_used
                 }
             elif add_m:
-                add_binary = re.search(r'(\d+(?:\.\d+)?)\s*(?:\+|plus|add(?:ed to)?)\s*(\d+(?:\.\d+)?)', q_lower)
-                if add_binary:
-                    a, b = float(add_binary.group(1)), float(add_binary.group(2))
-                    total = add.invoke({"a": a, "b": b})
-                    tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': a, 'b': b}})(), total))
-                    return {
-                        "output": f"The sum of {a} and {b} is {total:,.2f}.",
-                        "intermediate_steps": tools_used
-                    }
+                if add_m.lastindex == 2:
+                    a, b = float(add_m.group(1)), float(add_m.group(2))
+                else:
+                    add_binary = re.search(r'(\d+(?:\.\d+)?)\s*(?:\+|plus|add(?:ed to)?|and)\s*(\d+(?:\.\d+)?)', q_lower)
+                    if add_binary:
+                        a, b = float(add_binary.group(1)), float(add_binary.group(2))
+                    else:
+                        a, b = float(add_m.group(1)), 0.0
+                total = add.invoke({"a": a, "b": b})
+                tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': a, 'b': b}})(), total))
+                return {
+                    "output": f"The sum of {a} and {b} is {total:,.2f}.",
+                    "intermediate_steps": tools_used
+                }
 
-        # 3. Specific Entity & Encyclopedic Lookups (e.g. "who was the first pm of india", "who was alan turing")
+        # 4. Specific Entity & Encyclopedic Lookups (e.g. "who is the ceo of hcl", "who was the 1st pm of india")
         clean_query = re.sub(r'^(who is|who was|what is|tell me about|explain|according to wikipedia)\s+', '', query, flags=re.IGNORECASE).strip(' ?.')
         if not clean_query:
             clean_query = query
@@ -293,10 +364,11 @@ def create_ai_agent(
                     "system",
                     "You are a helpful, intelligent AI assistant equipped with specialized tools.\n"
                     "You have access to:\n"
-                    "1. 'wikipedia_search' - for encyclopedic, historical, and conceptual knowledge from Wikipedia.\n"
-                    "2. 'tavily_search_results_json' - for live, real-time web searches and current news.\n"
-                    "3. 'add' - for adding two numbers precisely.\n"
-                    "4. 'multiply' - for multiplying two numbers precisely.\n\n"
+                    "1. 'wikipedia_search' - for encyclopedic, historical, corporate leaders, and conceptual knowledge from Wikipedia.\n"
+                    "2. 'get_current_date_time' - for getting live date and time.\n"
+                    "3. 'tavily_search_results_json' - for live, real-time web searches and current news.\n"
+                    "4. 'add' - for adding two numbers precisely.\n"
+                    "5. 'multiply' - for multiplying two numbers precisely.\n\n"
                     "Always choose the most appropriate tool for each sub-task. "
                     "For arithmetic or calculations, always use the 'add' or 'multiply' tools rather than doing mental math. "
                     "Output your final answers in clean, normal, easy-to-read plain text. "

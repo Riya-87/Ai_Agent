@@ -84,6 +84,8 @@ async def chat_endpoint(request: ChatRequest):
                 display_name = "Wikipedia"
             elif "tavily" in tool_name.lower():
                 display_name = "Tavily Search"
+            elif "date" in tool_name.lower() or "time" in tool_name.lower():
+                display_name = "Live DateTime"
             elif tool_name == "add":
                 display_name = "Add"
             elif tool_name == "multiply":
