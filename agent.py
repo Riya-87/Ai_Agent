@@ -31,75 +31,173 @@ wikipedia.set_user_agent("AIAgentTutorial/1.0 (contact@example.com)")
 
 
 # ---------------------------------------------------------------------------
-# Offline / Core Knowledge Dictionary (Sorted by specificity)
+# Offline / Core Knowledge Dictionary (Comprehensive Profiles)
 # ---------------------------------------------------------------------------
 KNOWLEDGE_BASE = {
     # 1. Corporate & Tech Executives / CEOs
-    "ceo of hcl": "C Vijayakumar is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies). He was appointed CEO in October 2016 and MD in July 2021.",
-    "hcl ceo": "C Vijayakumar is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies). He was appointed CEO in October 2016 and MD in July 2021.",
-    "founder of hcl": "Shiv Nadar is the founder of HCL Group and HCL Technologies, established in 1976.",
-    "ceo of google": "Sundar Pichai is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google.",
-    "google ceo": "Sundar Pichai is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google.",
-    "ceo of microsoft": "Satya Nadella is the Chairman and Chief Executive Officer of Microsoft.",
-    "microsoft ceo": "Satya Nadella is the Chairman and Chief Executive Officer of Microsoft.",
-    "ceo of apple": "Tim Cook is the Chief Executive Officer of Apple Inc., having served in this role since 2011.",
-    "apple ceo": "Tim Cook is the Chief Executive Officer of Apple Inc., having served in this role since 2011.",
-    "ceo of tesla": "Elon Musk is the Chief Executive Officer of Tesla, Inc., and chief engineer of SpaceX.",
-    "tesla ceo": "Elon Musk is the Chief Executive Officer of Tesla, Inc., and chief engineer of SpaceX.",
-    "ceo of meta": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook).",
-    "meta ceo": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook).",
-    "ceo of openai": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence research and deployment company.",
-    "openai ceo": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence research and deployment company.",
-    "ceo of nvidia": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA.",
-    "nvidia ceo": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA.",
-    "ceo of amazon": "Andy Jassy is the President and Chief Executive Officer of Amazon.",
-    "amazon ceo": "Andy Jassy is the President and Chief Executive Officer of Amazon.",
-    "ceo of infosys": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys.",
-    "infosys ceo": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys.",
-    "ceo of tcs": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS).",
-    "tcs ceo": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS).",
-    "ceo of wipro": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro.",
-    "wipro ceo": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro.",
-    "chairman of reliance": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries.",
-    "reliance ceo": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries.",
+    "ceo of apple": (
+        "Timothy Donald Cook (Tim Cook) is the Chief Executive Officer of Apple Inc., having served as CEO since August 24, 2011, when he succeeded Apple co-founder Steve Jobs.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background & Early Career: Born in Robertsdale, Alabama (1960), Cook earned a B.S. in Industrial Engineering from Auburn University (1982) and an MBA from Duke University's Fuqua School of Business (1988). Prior to Apple, he spent 12 years at IBM and served as Vice President of Corporate Materials at Compaq.\n"
+        "• Apple Operations & Supply Chain: Joined Apple in March 1998 as Senior Vice President for Worldwide Operations. He streamlined Apple's manufacturing and inventory systems, building one of the world's most resilient and efficient supply chains.\n"
+        "• Major Product Milestones: Under Cook's tenure as CEO, Apple launched the Apple Watch, AirPods, Apple Silicon (M1/M2/M3/M4 custom chips), iPad Pro, and Apple Vision Pro spatial computer, alongside high-margin subscription services (Apple Music, iCloud+, Apple Pay, Apple TV+).\n"
+        "• Market Valuation: Cook led Apple to become the first publicly traded company in history to surpass $1 Trillion, $2 Trillion, and $3 Trillion in market capitalization."
+    ),
+    "apple ceo": (
+        "Timothy Donald Cook (Tim Cook) is the Chief Executive Officer of Apple Inc., having served as CEO since August 24, 2011, when he succeeded Apple co-founder Steve Jobs.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background & Early Career: Born in Robertsdale, Alabama (1960), Cook earned a B.S. in Industrial Engineering from Auburn University (1982) and an MBA from Duke University's Fuqua School of Business (1988). Prior to Apple, he spent 12 years at IBM and served as Vice President of Corporate Materials at Compaq.\n"
+        "• Apple Operations & Supply Chain: Joined Apple in March 1998 as Senior Vice President for Worldwide Operations. He streamlined Apple's manufacturing and inventory systems, building one of the world's most resilient and efficient supply chains.\n"
+        "• Major Product Milestones: Under Cook's tenure as CEO, Apple launched the Apple Watch, AirPods, Apple Silicon (M1/M2/M3/M4 custom chips), iPad Pro, and Apple Vision Pro spatial computer, alongside high-margin subscription services (Apple Music, iCloud+, Apple Pay, Apple TV+).\n"
+        "• Market Valuation: Cook led Apple to become the first publicly traded company in history to surpass $1 Trillion, $2 Trillion, and $3 Trillion in market capitalization."
+    ),
+    "ceo of hcl": (
+        "C Vijayakumar (CVK) is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies), a leading global technology services and consulting multinational.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Leadership & Tenure: Appointed CEO in October 2016 and Managing Director in July 2021. He joined HCL in 1994 as a core founding member of the startup team for HCL Comnet and has led business units across North America and globally.\n"
+        "• Strategic Transformation: Under his leadership, HCLTech surpassed $12+ billion in annual revenue, transitioned into a global leader in Hybrid Cloud, AI Solutions, Cybersecurity, and Engineering and R&D Services (ERS).\n"
+        "• Recognition: Recognized as one of the top-performing technology CEOs globally for spearheading sustainable corporate governance, client-centric innovation, and deep technological transformation."
+    ),
+    "hcl ceo": (
+        "C Vijayakumar (CVK) is the Chief Executive Officer and Managing Director of HCLTech (HCL Technologies), a leading global technology services and consulting multinational.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Leadership & Tenure: Appointed CEO in October 2016 and Managing Director in July 2021. He joined HCL in 1994 as a core founding member of the startup team for HCL Comnet and has led business units across North America and globally.\n"
+        "• Strategic Transformation: Under his leadership, HCLTech surpassed $12+ billion in annual revenue, transitioned into a global leader in Hybrid Cloud, AI Solutions, Cybersecurity, and Engineering and R&D Services (ERS).\n"
+        "• Recognition: Recognized as one of the top-performing technology CEOs globally for spearheading sustainable corporate governance, client-centric innovation, and deep technological transformation."
+    ),
+    "founder of hcl": "Shiv Nadar is the visionary founder and Chairman Emeritus of HCL Enterprise and HCL Technologies, established in 1976. He is a pioneering Indian industrialist, philanthropist, and founder of the Shiv Nadar Foundation.",
+    "ceo of google": (
+        "Sundar Pichai (Pichai Sundararajan) is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google LLC.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background & Education: Born in Madurai, Tamil Nadu, India (1972), Pichai earned a B.Tech from IIT Kharagpur, an M.S. from Stanford University in Materials Science, and an MBA from the Wharton School of the University of Pennsylvania.\n"
+        "• Rise at Google: Joined Google in 2004, leading product management for Google Chrome, ChromeOS, Google Drive, Google Maps, and Android OS.\n"
+        "• CEO Tenure: Appointed CEO of Google in August 2015 during Alphabet's founding restructuring, and CEO of parent company Alphabet Inc. in December 2019 upon the retirement of founders Larry Page and Sergey Brin.\n"
+        "• Strategic Direction: Pioneered Google's pivot to an 'AI-First' company, driving the development of Gemini, Google Cloud Platform, Transformer architecture research, and quantum computing."
+    ),
+    "google ceo": (
+        "Sundar Pichai (Pichai Sundararajan) is the Chief Executive Officer of Alphabet Inc. and its subsidiary Google LLC.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background & Education: Born in Madurai, Tamil Nadu, India (1972), Pichai earned a B.Tech from IIT Kharagpur, an M.S. from Stanford University in Materials Science, and an MBA from the Wharton School of the University of Pennsylvania.\n"
+        "• Rise at Google: Joined Google in 2004, leading product management for Google Chrome, ChromeOS, Google Drive, Google Maps, and Android OS.\n"
+        "• CEO Tenure: Appointed CEO of Google in August 2015 during Alphabet's founding restructuring, and CEO of parent company Alphabet Inc. in December 2019 upon the retirement of founders Larry Page and Sergey Brin.\n"
+        "• Strategic Direction: Pioneered Google's pivot to an 'AI-First' company, driving the development of Gemini, Google Cloud Platform, Transformer architecture research, and quantum computing."
+    ),
+    "ceo of microsoft": (
+        "Satya Nadella is the Executive Chairman and Chief Executive Officer of Microsoft Corporation.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background: Born in Hyderabad, India (1967), Nadella earned a B.E. from Manipal Institute of Technology, an M.S. in Computer Science from the University of Wisconsin–Milwaukee, and an MBA from the University of Chicago Booth School of Business.\n"
+        "• Cloud Transformation: Joined Microsoft in 1992 and was appointed CEO in February 2014, succeeding Steve Ballmer. He engineered Microsoft's monumental shift to cloud computing via Microsoft Azure.\n"
+        "• Major Acquisitions: Led acquisitions of LinkedIn ($26.2B), GitHub ($7.5B), Activision Blizzard ($68.7B), and established Microsoft's alliance with OpenAI to embed Copilot AI across enterprise software."
+    ),
+    "microsoft ceo": (
+        "Satya Nadella is the Executive Chairman and Chief Executive Officer of Microsoft Corporation.\n\n"
+        "Key Career Background & Achievements:\n"
+        "• Background: Born in Hyderabad, India (1967), Nadella earned a B.E. from Manipal Institute of Technology, an M.S. in Computer Science from the University of Wisconsin–Milwaukee, and an MBA from the University of Chicago Booth School of Business.\n"
+        "• Cloud Transformation: Joined Microsoft in 1992 and was appointed CEO in February 2014, succeeding Steve Ballmer. He engineered Microsoft's monumental shift to cloud computing via Microsoft Azure.\n"
+        "• Major Acquisitions: Led acquisitions of LinkedIn ($26.2B), GitHub ($7.5B), Activision Blizzard ($68.7B), and established Microsoft's alliance with OpenAI to embed Copilot AI across enterprise software."
+    ),
+    "ceo of tesla": (
+        "Elon Musk is the Chief Executive Officer and Product Architect of Tesla, Inc., and CEO / Chief Engineer of SpaceX.\n\n"
+        "Key Highlights:\n"
+        "• Tesla Leadership: Joined Tesla in 2004 as lead investor and chairman, becoming CEO in 2008. Oversaw the development of the Roadster, Model S, Model 3, Model X, Model Y, and Cybertruck, pioneering mass-market electric mobility.\n"
+        "• Other Ventures: Founder of xAI, The Boring Company, and Neuralink, and Owner of X (formerly Twitter). SpaceX revolutionized aerospace with reusable Falcon 9 rockets and Starship."
+    ),
+    "tesla ceo": (
+        "Elon Musk is the Chief Executive Officer and Product Architect of Tesla, Inc., and CEO / Chief Engineer of SpaceX.\n\n"
+        "Key Highlights:\n"
+        "• Tesla Leadership: Joined Tesla in 2004 as lead investor and chairman, becoming CEO in 2008. Oversaw the development of the Roadster, Model S, Model 3, Model X, Model Y, and Cybertruck, pioneering mass-market electric mobility.\n"
+        "• Other Ventures: Founder of xAI, The Boring Company, and Neuralink, and Owner of X (formerly Twitter). SpaceX revolutionized aerospace with reusable Falcon 9 rockets and Starship."
+    ),
+    "ceo of meta": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook). He co-founded Facebook at Harvard in 2004 and led the company through major acquisitions including Instagram (2012) and WhatsApp (2014), alongside pioneering the open-source Llama AI ecosystem.",
+    "meta ceo": "Mark Zuckerberg is the founder, chairman, and Chief Executive Officer of Meta Platforms (formerly Facebook). He co-founded Facebook at Harvard in 2004 and led the company through major acquisitions including Instagram (2012) and WhatsApp (2014), alongside pioneering the open-source Llama AI ecosystem.",
+    "ceo of openai": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence organization behind ChatGPT, GPT-4, and DALL-E. He was previously President of startup accelerator Y Combinator (YC).",
+    "openai ceo": "Sam Altman is the Chief Executive Officer of OpenAI, the artificial intelligence organization behind ChatGPT, GPT-4, and DALL-E. He was previously President of startup accelerator Y Combinator (YC).",
+    "ceo of nvidia": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA Corporation, which he founded in 1993. Under his vision, NVIDIA pioneered the GPU (GeForce) and the CUDA architecture, establishing NVIDIA hardware as the global engine for modern AI supercomputing.",
+    "nvidia ceo": "Jensen Huang is the co-founder, President, and Chief Executive Officer of NVIDIA Corporation, which he founded in 1993. Under his vision, NVIDIA pioneered the GPU (GeForce) and the CUDA architecture, establishing NVIDIA hardware as the global engine for modern AI supercomputing.",
+    "ceo of amazon": "Andy Jassy is the President and Chief Executive Officer of Amazon. He previously founded and led Amazon Web Services (AWS) from its inception in 2003 into the world's leading cloud computing infrastructure before succeeding Jeff Bezos as CEO in July 2021.",
+    "amazon ceo": "Andy Jassy is the President and Chief Executive Officer of Amazon. He previously founded and led Amazon Web Services (AWS) from its inception in 2003 into the world's leading cloud computing infrastructure before succeeding Jeff Bezos as CEO in July 2021.",
+    "ceo of infosys": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys, having taken leadership in January 2018. He has over three decades of global IT services and digital transformation leadership experience.",
+    "infosys ceo": "Salil Parekh is the Chief Executive Officer and Managing Director of Infosys, having taken leadership in January 2018. He has over three decades of global IT services and digital transformation leadership experience.",
+    "ceo of tcs": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS), appointed in June 2023 after serving over 34 years in pivotal leadership roles across TCS's global banking, financial, and digital services.",
+    "tcs ceo": "K. Krithivasan is the Chief Executive Officer and Managing Director of Tata Consultancy Services (TCS), appointed in June 2023 after serving over 34 years in pivotal leadership roles across TCS's global banking, financial, and digital services.",
+    "ceo of wipro": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited, appointed in April 2024 with over three decades of leadership within Wipro across cloud, consumer, and strategic business units.",
+    "wipro ceo": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited, appointed in April 2024 with over three decades of leadership within Wipro across cloud, consumer, and strategic business units.",
+    "chairman of reliance": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries Limited (RIL), India's most valuable conglomerate spanning energy, petrochemicals, telecommunications (Jio), and retail.",
+    "reliance ceo": "Mukesh Ambani is the Chairman and Managing Director of Reliance Industries Limited (RIL), India's most valuable conglomerate spanning energy, petrochemicals, telecommunications (Jio), and retail.",
 
     # 2. Historical Leaders & Firsts (Most specific first)
-    "first pm of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964. He was a central figure in Indian politics before and after independence.",
-    "first prime minister of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964. He was a central figure in Indian politics before and after independence.",
-    "who was the first pm of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964.",
-    "who was the first prime minister of india": "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death in May 1964.",
-    "first president of india": "Dr. Rajendra Prasad (1884–1963) was the first President of India, in office from 1950 to 1962.",
-    "first woman prime minister of india": "Indira Gandhi (1917–1984) was the first and only female Prime Minister of India to date.",
-    "first woman president of india": "Pratibha Patil served as the 12th President of India from 2007 to 2012, becoming the first woman to hold the office.",
-    "first president of us": "George Washington (1732–1799) was the first President of the United States, serving from 1789 to 1797.",
-    "first president of usa": "George Washington (1732–1799) was the first President of the United States, serving from 1789 to 1797.",
-    "father of indian constitution": "Dr. B. R. Ambedkar was the chief architect and chairman of the Drafting Committee of the Constitution of India.",
-    "father of the constitution of india": "Dr. B. R. Ambedkar was the chief architect and chairman of the Drafting Committee of the Constitution of India.",
+    "first pm of india": (
+        "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death on May 27, 1964.\n\n"
+        "Key Contributions & Achievements:\n"
+        "• Independence Movement: A central leader of the Indian National Congress alongside Mahatma Gandhi, Nehru spent years in prison during the freedom struggle and delivered the historic 'Tryst with Destiny' speech on the eve of independence.\n"
+        "• Architect of Modern India: Championed secular democracy, industrial planning (Five-Year Plans), and state-of-the-art scientific infrastructure, establishing premier institutions such as the IITs, IIMs, AIIMS, and the Atomic Energy Commission.\n"
+        "• Foreign Policy: Co-founded the Non-Aligned Movement (NAM) to maintain strategic independence during the Cold War."
+    ),
+    "first prime minister of india": (
+        "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death on May 27, 1964.\n\n"
+        "Key Contributions & Achievements:\n"
+        "• Independence Movement: A central leader of the Indian National Congress alongside Mahatma Gandhi, Nehru spent years in prison during the freedom struggle and delivered the historic 'Tryst with Destiny' speech on the eve of independence.\n"
+        "• Architect of Modern India: Championed secular democracy, industrial planning (Five-Year Plans), and state-of-the-art scientific infrastructure, establishing premier institutions such as the IITs, IIMs, AIIMS, and the Atomic Energy Commission.\n"
+        "• Foreign Policy: Co-founded the Non-Aligned Movement (NAM) to maintain strategic independence during the Cold War."
+    ),
+    "who was the first pm of india": (
+        "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death on May 27, 1964.\n\n"
+        "Key Contributions & Achievements:\n"
+        "• Independence Movement: A central leader of the Indian National Congress alongside Mahatma Gandhi, Nehru spent years in prison during the freedom struggle and delivered the historic 'Tryst with Destiny' speech on the eve of independence.\n"
+        "• Architect of Modern India: Championed secular democracy, industrial planning (Five-Year Plans), and state-of-the-art scientific infrastructure, establishing premier institutions such as the IITs, IIMs, AIIMS, and the Atomic Energy Commission.\n"
+        "• Foreign Policy: Co-founded the Non-Aligned Movement (NAM) to maintain strategic independence during the Cold War."
+    ),
+    "who was the first prime minister of india": (
+        "Jawaharlal Nehru (1889–1964) was the first Prime Minister of independent India, serving from August 15, 1947 until his death on May 27, 1964.\n\n"
+        "Key Contributions & Achievements:\n"
+        "• Independence Movement: A central leader of the Indian National Congress alongside Mahatma Gandhi, Nehru spent years in prison during the freedom struggle and delivered the historic 'Tryst with Destiny' speech on the eve of independence.\n"
+        "• Architect of Modern India: Championed secular democracy, industrial planning (Five-Year Plans), and state-of-the-art scientific infrastructure, establishing premier institutions such as the IITs, IIMs, AIIMS, and the Atomic Energy Commission.\n"
+        "• Foreign Policy: Co-founded the Non-Aligned Movement (NAM) to maintain strategic independence during the Cold War."
+    ),
+    "first president of india": "Dr. Rajendra Prasad (1884–1963) was the first President of India, serving from 1950 to 1962. A lawyer and scholar, he also presided over the Constituent Assembly that created the Constitution of India.",
+    "first woman prime minister of india": "Indira Gandhi (1917–1984) was the first and only female Prime Minister of India, serving across multiple terms (1966–1977 and 1980–1984).",
+    "first woman president of india": "Pratibha Patil served as the 12th President of India from 2007 to 2012, becoming the first woman to hold the office of President of India.",
+    "first president of us": "George Washington (1732–1799) was an American military officer and statesman who served as the first President of the United States from 1789 to 1797.",
+    "first president of usa": "George Washington (1732–1799) was an American military officer and statesman who served as the first President of the United States from 1789 to 1797.",
+    "father of indian constitution": "Dr. B. R. Ambedkar (Bhimrao Ramji Ambedkar) was an Indian jurist, social reformer, and political leader who headed the Drafting Committee of the Constitution of India and served as India's first Minister of Law and Justice.",
+    "father of the constitution of india": "Dr. B. R. Ambedkar (Bhimrao Ramji Ambedkar) was an Indian jurist, social reformer, and political leader who headed the Drafting Committee of the Constitution of India and served as India's first Minister of Law and Justice.",
     
     # 3. Current Leadership & Geopolitics
-    "cm of up": "The Chief Minister of Uttar Pradesh is Yogi Adityanath (serving since March 19, 2017). Uttar Pradesh is India's most populous state, with its capital located in Lucknow.",
-    "chief minister of uttar pradesh": "The Chief Minister of Uttar Pradesh is Yogi Adityanath (serving since March 19, 2017). Uttar Pradesh is India's most populous state, with its capital located in Lucknow.",
-    "current pm of india": "The current Prime Minister of India is Narendra Modi (serving since May 2014).",
-    "pm of india": "The Prime Minister of India is Narendra Modi (serving since May 2014).",
-    "prime minister of india": "The Prime Minister of India is Narendra Modi (serving since May 2014).",
-    "current president of india": "Droupadi Murmu is the 15th and current President of India, serving since July 25, 2022.",
-    "president of india": "Droupadi Murmu is the 15th and current President of India, serving since July 25, 2022.",
-    "capital of india": "The capital of India is New Delhi.",
-    "capital of up": "The capital of Uttar Pradesh is Lucknow.",
-    "capital of usa": "The capital of the United States is Washington, D.C.",
-    "capital of us": "The capital of the United States is Washington, D.C.",
-    "capital of uk": "The capital of the United Kingdom is London.",
-    "capital of france": "The capital of France is Paris.",
+    "cm of up": "Yogi Adityanath (born Ajay Mohan Singh Bisht) is the 21st and current Chief Minister of Uttar Pradesh, serving since March 19, 2017. He represents the Gorakhpur Urban constituency and is a prominent leader of the Bharatiya Janata Party (BJP).",
+    "chief minister of uttar pradesh": "Yogi Adityanath (born Ajay Mohan Singh Bisht) is the 21st and current Chief Minister of Uttar Pradesh, serving since March 19, 2017. He represents the Gorakhpur Urban constituency and is a prominent leader of the Bharatiya Janata Party (BJP).",
+    "current pm of india": "Narendra Modi (Narendra Damodardas Modi) is the 14th and current Prime Minister of India, in office since May 26, 2014. He previously served as Chief Minister of Gujarat from 2001 to 2014.",
+    "pm of india": "Narendra Modi (Narendra Damodardas Modi) is the 14th and current Prime Minister of India, in office since May 26, 2014. He previously served as Chief Minister of Gujarat from 2001 to 2014.",
+    "prime minister of india": "Narendra Modi (Narendra Damodardas Modi) is the 14th and current Prime Minister of India, in office since May 26, 2014. He previously served as Chief Minister of Gujarat from 2001 to 2014.",
+    "current president of india": "Droupadi Murmu is the 15th and current President of India, serving since July 25, 2022. She is the first person belonging to a tribal community and the second woman to hold the office.",
+    "president of india": "Droupadi Murmu is the 15th and current President of India, serving since July 25, 2022. She is the first person belonging to a tribal community and the second woman to hold the office.",
+    "capital of india": "New Delhi is the capital of India, serving as the seat of all three branches of the Government of India (Rashtrapati Bhavan, Parliament House, and Supreme Court).",
+    "capital of up": "Lucknow is the capital and largest administrative city of the northern Indian state of Uttar Pradesh.",
+    "capital of usa": "Washington, D.C., formally the District of Columbia, is the capital city and federal district of the United States.",
+    "capital of us": "Washington, D.C., formally the District of Columbia, is the capital city and federal district of the United States.",
+    "capital of uk": "London is the capital and largest city of the United Kingdom and England.",
+    "capital of france": "Paris is the capital and most populous city of France.",
 
     # 4. Science, Technology, Crypto & AI
-    "alan turing": "Alan Turing (1912–1954) was an English mathematician, computer scientist, logician, and cryptanalyst. Widely considered the father of theoretical computer science and artificial intelligence, he played a pivotal role in cracking the Enigma cipher during World War II.",
-    "bitcoin": "Bitcoin is a decentralized digital cryptocurrency created in 2008 by Satoshi Nakamoto. It uses blockchain distributed ledger technology to enable peer-to-peer transactions without central intermediaries.",
-    "satoshi nakamoto": "Satoshi Nakamoto is the pseudonymous creator of Bitcoin and author of the 2008 Bitcoin whitepaper.",
-    "defi": "Decentralized Finance (DeFi) represents financial applications built on blockchain networks and smart contracts that operate without traditional intermediaries like banks or brokerages.",
-    "ethereum": "Ethereum is a decentralized, open-source blockchain with smart contract functionality, conceived in 2013 by Vitalik Buterin.",
-    "quantum entanglement": "Quantum entanglement is a phenomenon in quantum mechanics where particles become inextricably linked such that the state of one instantly influences the state of another, regardless of distance.",
-    "superposition": "Quantum superposition is the ability of a quantum system to be in multiple states at the same time until it is measured.",
-    "artificial intelligence": "Artificial Intelligence (AI) is the simulation of human intelligence processes by computer systems, including machine learning, natural language processing, and autonomous multi-tool reasoning.",
+    "alan turing": (
+        "Alan Mathison Turing (1912–1954) was an English mathematician, computer scientist, logician, cryptanalyst, and theoretical biologist.\n\n"
+        "Key Contributions:\n"
+        "• Bletchley Park & Enigma: During WWII, Turing played a pivotal role breaking intercepted German military ciphers, developing the 'Bombe' machine to crack the Enigma code, saving millions of lives.\n"
+        "• Theoretical Computer Science: Formulated the Turing Machine (1936), the foundational mathematical model of modern digital computing.\n"
+        "• Artificial Intelligence & Turing Test: Authored 'Computing Machinery and Intelligence' (1950), proposing the Turing Test as the benchmark for machine cognition."
+    ),
+    "bitcoin": (
+        "Bitcoin (BTC) is the world's first decentralized cryptocurrency and digital store of value, launched in January 2009 by the pseudonymous creator Satoshi Nakamoto.\n\n"
+        "Key Technical Architecture:\n"
+        "• Blockchain & Proof-of-Work: Operates on a distributed ledger where transactions are secured by decentralized miners using SHA-256 Proof-of-Work.\n"
+        "• Fixed Supply: Has a strict hard cap of 21 million BTC, preventing inflationary debasement.\n"
+        "• Halving Schedule: Block rewards halve every 210,000 blocks (~4 years), reinforcing digital scarcity."
+    ),
+    "satoshi nakamoto": "Satoshi Nakamoto is the pseudonymous name used by the presumed person or group of people who developed Bitcoin, authored the 2008 Bitcoin whitepaper ('Bitcoin: A Peer-to-Peer Electronic Cash System'), and deployed Bitcoin's original reference implementation in 2009.",
+    "defi": "Decentralized Finance (DeFi) is an umbrella term for peer-to-peer financial services and protocols built on public blockchains (primarily Ethereum, Solana, and Layer 2s) using self-executing smart contracts. DeFi enables lending, borrowing, trading, and yield generation without traditional banking intermediaries.",
+    "ethereum": "Ethereum is a decentralized, open-source blockchain with smart contract functionality, conceived in 2013 by Vitalik Buterin and launched in 2015. It serves as the foundational settlement layer for decentralized applications (dApps), DeFi protocols, NFTs, and Layer 2 rollups.",
+    "quantum entanglement": "Quantum entanglement is a physical phenomenon in quantum mechanics where pairs or groups of particles interact in ways such that the quantum state of each particle cannot be described independently of the state of the others, even when the particles are separated by vast distances.",
+    "superposition": "Quantum superposition is a fundamental principle of quantum mechanics stating that any physical system can exist simultaneously in multiple distinct states or configurations until a measurement collapses the system into a definite state.",
+    "artificial intelligence": "Artificial Intelligence (AI) is the branch of computer science dedicated to creating systems and algorithms capable of performing tasks that typically require human cognition, including natural language processing, autonomous tool reasoning, computer vision, and machine learning."
 }
 
 
@@ -206,8 +304,8 @@ def wikipedia_search(query: str) -> str:
                 for res_title in results:
                     page = wikipedia.page(res_title, auto_suggest=False)
                     summary = page.summary.strip()
-                    if summary and len(summary) > 20:
-                        return f"Title: {page.title}\nSummary: {summary[:1500]}"
+                    if summary and len(summary) > 50:
+                        return f"• Title: {page.title}\n• Summary:\n{summary[:2500]}"
         except Exception:
             continue
 
