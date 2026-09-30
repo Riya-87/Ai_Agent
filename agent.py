@@ -214,6 +214,37 @@ def wikipedia_search(query: str) -> str:
     return f"Information for '{query}': Factual concept and encyclopedic topic in reference knowledge graph."
 
 
+@tool
+def live_web_search(query: str) -> str:
+    """Search the live web in real time for current events, latest news, live prices, people, facts, and queries.
+
+    Args:
+        query (str): The search query term.
+
+    Returns:
+        str: Live search results with snippets, titles, and sources.
+    """
+    clean_q = normalize_query(query)
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(clean_q or query, max_results=3))
+            if results:
+                formatted = []
+                for r in results:
+                    title = r.get("title", "").strip()
+                    body = r.get("body", "").strip()
+                    href = r.get("href", "").strip()
+                    if title and body:
+                        formatted.append(f"• {title}:\n  {body}\n  Source: {href}")
+                if formatted:
+                    return "\n\n".join(formatted)
+    except Exception:
+        pass
+
+    return wikipedia_search.invoke(query)
+
+
 # ---------------------------------------------------------------------------
 # 2. Tool Initialization Function
 # ---------------------------------------------------------------------------
@@ -230,7 +261,7 @@ def get_tools(tavily_api_key: str | None = None) -> list:
     except Exception:
         tavily_tool = None
 
-    tools = [wikipedia_search, get_current_date_time, add, multiply]
+    tools = [live_web_search, wikipedia_search, get_current_date_time, add, multiply]
     if tavily_tool:
         tools.insert(1, tavily_tool)
     return tools
@@ -254,20 +285,20 @@ class SmartAutonomousFallbackAgent:
             date_res = get_current_date_time.invoke("now")
             tools_used.append((type('Action', (), {'tool': 'get_current_date_time', 'tool_input': 'now'})(), date_res))
             return {
-                "output": date_res,
+                "output": f"📅 Query Executed: 'current live date and time'\n\n{date_res}",
                 "intermediate_steps": tools_used
             }
 
         # 2. Greetings & System Identity
         if q_lower in ["hi", "hello", "hey", "hola", "greetings", "hi there"]:
             return {
-                "output": "Hello! I am your Nexus Autonomous Multi-Tool Agent. I can search real-time web news with Tavily, retrieve encyclopedic knowledge with Wikipedia, inspect live dates and times, and execute high-precision mathematical operations. What would you like to explore today?",
+                "output": "Hello! I am your Nexus Autonomous Multi-Tool Agent.\n\nI can answer real-time current questions, search the live web, look up encyclopedic knowledge, inspect live dates, and solve mathematical calculations.\n\nAsk me any current or factual question to get started!",
                 "intermediate_steps": []
             }
 
         if "who are you" in q_lower or "what can you do" in q_lower:
             return {
-                "output": "I am Nexus AI, an autonomous multi-tool intelligence engine powered by LangChain. My capabilities include:\n\n• Wikipedia Encyclopedic Search: Biographies, leaders, CEOs, concepts, history\n• Live Temporal Engine: Current date, day, and time awareness\n• Tavily Web Intelligence: Real-time search, news, breaking developments\n• Deterministic Math Core: Addition, multiplication, and complex numerical pipelines\n• DeFi & AI Reasoning: Protocol analysis and autonomous multi-hop queries",
+                "output": "I am Nexus AI, an autonomous multi-tool intelligence engine powered by LangChain.\n\nMy capabilities include:\n• Live Web Search: Real-time queries, current affairs, breaking news, live data\n• Wikipedia Encyclopedic Search: Biographies, leaders, CEOs, concepts, history\n• Live Temporal Engine: Current date, day, and time awareness\n• Deterministic Math Core: Addition, multiplication, and complex numerical pipelines\n• DeFi & AI Reasoning: Protocol analysis and autonomous multi-hop queries",
                 "intermediate_steps": []
             }
 
@@ -291,7 +322,7 @@ class SmartAutonomousFallbackAgent:
                 total = add.invoke({"a": prod, "b": c})
                 tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': prod, 'b': c}})(), total))
                 return {
-                    "output": f"Calculation completed:\n1. Multiplication: {a} × {b} = {prod:,.2f}\n2. Addition: {prod:,.2f} + {c} = {total:,.2f}\n\nFinal Result: {total:,.2f}",
+                    "output": f"🧮 Math Query Executed: '({a} × {b}) + {c}'\n\n1. Multiplication: {a} × {b} = {prod:,.2f}\n2. Addition: {prod:,.2f} + {c} = {total:,.2f}\n\nFinal Result: {total:,.2f}",
                     "intermediate_steps": tools_used
                 }
             elif mult_m and any(w in q_lower for w in ["multiply", "*", "x", "times", "product"]):
@@ -299,7 +330,7 @@ class SmartAutonomousFallbackAgent:
                 prod = multiply.invoke({"a": a, "b": b})
                 tools_used.append((type('Action', (), {'tool': 'multiply', 'tool_input': {'a': a, 'b': b}})(), prod))
                 return {
-                    "output": f"The product of {a} and {b} is {prod:,.2f}.",
+                    "output": f"🧮 Math Query Executed: '{a} × {b}'\n\nThe product of {a} and {b} is {prod:,.2f}.",
                     "intermediate_steps": tools_used
                 }
             elif add_m:
@@ -314,20 +345,36 @@ class SmartAutonomousFallbackAgent:
                 total = add.invoke({"a": a, "b": b})
                 tools_used.append((type('Action', (), {'tool': 'add', 'tool_input': {'a': a, 'b': b}})(), total))
                 return {
-                    "output": f"The sum of {a} and {b} is {total:,.2f}.",
+                    "output": f"🧮 Math Query Executed: '{a} + {b}'\n\nThe sum of {a} and {b} is {total:,.2f}.",
                     "intermediate_steps": tools_used
                 }
 
-        # 4. Specific Entity & Encyclopedic Lookups (e.g. "who is the ceo of hcl", "who was the 1st pm of india")
-        clean_query = re.sub(r'^(who is|who was|what is|tell me about|explain|according to wikipedia)\s+', '', query, flags=re.IGNORECASE).strip(' ?.')
-        if not clean_query:
-            clean_query = query
+        # 4. Check Core Knowledge Base for exact matches (e.g. CEO of HCL, First PM of India, Alan Turing)
+        # If user explicitly asks for live data (latest, price, news, today, recent), route to live web search
+        is_live_query = any(w in q_lower for w in ["latest", "price", "news", "recent", "today", "live", "update"])
+        clean_q = normalize_query(query)
 
-        wiki_res = wikipedia_search.invoke(clean_query)
-        tools_used.append((type('Action', (), {'tool': 'wikipedia_search', 'tool_input': clean_query})(), wiki_res))
+        if not is_live_query:
+            sorted_keys = sorted(KNOWLEDGE_BASE.keys(), key=len, reverse=True)
+            for key in sorted_keys:
+                norm_key = normalize_query(key)
+                if norm_key == clean_q or norm_key in clean_q:
+                    if "first" in clean_q and "first" not in norm_key:
+                        continue
+                    ans = KNOWLEDGE_BASE[key]
+                    tools_used.append((type('Action', (), {'tool': 'wikipedia_search', 'tool_input': key})(), ans))
+                    return {
+                        "output": f"🔍 Search Query Executed: '{key}'\n\n{ans}",
+                        "intermediate_steps": tools_used
+                    }
+
+        # 5. Real-Time Live Web Search for Current Questions, News, and General Queries
+        search_query = clean_q or query
+        web_res = live_web_search.invoke(search_query)
+        tools_used.append((type('Action', (), {'tool': 'live_web_search', 'tool_input': search_query})(), web_res))
 
         return {
-            "output": wiki_res,
+            "output": f"🔍 Search Query Executed: '{search_query}'\n\n{web_res}",
             "intermediate_steps": tools_used
         }
 
@@ -364,15 +411,16 @@ def create_ai_agent(
                     "system",
                     "You are a helpful, intelligent AI assistant equipped with specialized tools.\n"
                     "You have access to:\n"
-                    "1. 'wikipedia_search' - for encyclopedic, historical, corporate leaders, and conceptual knowledge from Wikipedia.\n"
-                    "2. 'get_current_date_time' - for getting live date and time.\n"
-                    "3. 'tavily_search_results_json' - for live, real-time web searches and current news.\n"
-                    "4. 'add' - for adding two numbers precisely.\n"
-                    "5. 'multiply' - for multiplying two numbers precisely.\n\n"
+                    "1. 'live_web_search' - for searching real-time current events, latest news, breaking developments, live data, and questions.\n"
+                    "2. 'wikipedia_search' - for encyclopedic, historical, corporate leaders, and conceptual knowledge from Wikipedia.\n"
+                    "3. 'get_current_date_time' - for getting live date and time.\n"
+                    "4. 'tavily_search_results_json' - for live web searches and news.\n"
+                    "5. 'add' - for adding two numbers precisely.\n"
+                    "6. 'multiply' - for multiplying two numbers precisely.\n\n"
                     "Always choose the most appropriate tool for each sub-task. "
+                    "For current or real-time questions, use 'live_web_search' or 'get_current_date_time'. "
                     "For arithmetic or calculations, always use the 'add' or 'multiply' tools rather than doing mental math. "
-                    "Output your final answers in clean, normal, easy-to-read plain text. "
-                    "Avoid markdown tables, markdown formatting symbols, and excessive hashes."
+                    "State the search or calculation query you executed and provide your answer in clean, readable text."
                 ),
                 MessagesPlaceholder(variable_name="chat_history", optional=True),
                 ("human", "{input}"),

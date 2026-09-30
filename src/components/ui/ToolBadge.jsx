@@ -8,7 +8,9 @@ import {
   ChevronDown,
   ChevronUp,
   Terminal,
-  ExternalLink
+  ExternalLink,
+  Globe,
+  Clock
 } from 'lucide-react';
 
 export function ToolBadge({ tool, onInspect }) {
@@ -16,6 +18,24 @@ export function ToolBadge({ tool, onInspect }) {
 
   const getToolMeta = (toolName) => {
     const t = (toolName || '').toLowerCase();
+    if (t.includes('live_web') || t.includes('web search') || t.includes('ddgs')) {
+      return {
+        label: 'Live Web Search',
+        icon: Globe,
+        color: 'text-cyan-400',
+        bg: 'bg-cyan-500/10 border-cyan-500/30',
+        glow: 'shadow-[0_0_12px_rgba(6,182,212,0.25)]',
+      };
+    }
+    if (t.includes('date') || t.includes('time')) {
+      return {
+        label: 'Live DateTime Engine',
+        icon: Clock,
+        color: 'text-emerald-400',
+        bg: 'bg-emerald-500/10 border-emerald-500/30',
+        glow: 'shadow-[0_0_12px_rgba(16,185,129,0.25)]',
+      };
+    }
     if (t.includes('wiki')) {
       return {
         label: 'Wikipedia Knowledge',
@@ -25,7 +45,7 @@ export function ToolBadge({ tool, onInspect }) {
         glow: 'shadow-[0_0_12px_rgba(168,85,247,0.25)]',
       };
     }
-    if (t.includes('tavily') || t.includes('search')) {
+    if (t.includes('tavily')) {
       return {
         label: 'Tavily Web Search',
         icon: Search,

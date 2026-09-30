@@ -5,32 +5,32 @@ import { Sparkles, Globe, Calculator, BookOpen, Atom, TrendingUp } from 'lucide-
 export function PromptChips({ onSelectPrompt }) {
   const prompts = [
     {
-      title: 'DeFi Intelligence',
-      query: 'What are the top DeFi protocol mechanisms, liquidity pools, and automated market maker trends in 2024?',
-      toolHint: 'Tavily Search',
-      icon: TrendingUp,
-      color: 'text-neon-magenta',
+      title: 'Real-Time Web Intelligence',
+      query: 'What is the latest Bitcoin price and current market developments?',
+      toolHint: 'Live Web Search',
+      icon: Globe,
+      color: 'text-cyan-400',
     },
     {
-      title: 'Quantum Cryptography',
-      query: 'Explain zero-knowledge proofs (ZKP) and elliptic curve cryptography on Wikipedia.',
-      toolHint: 'Wikipedia',
+      title: 'Current Date & Time',
+      query: 'What is the current date, day, and live time right now?',
+      toolHint: 'Live DateTime',
+      icon: Sparkles,
+      color: 'text-emerald-400',
+    },
+    {
+      title: 'Executive & Wikipedia',
+      query: 'Who is the CEO of HCL and what is the company history?',
+      toolHint: 'Wikipedia Knowledge',
       icon: BookOpen,
       color: 'text-purple-400',
     },
     {
-      title: 'Precision Computation',
-      query: 'What is 1420 multiplied by 68, plus 5340? Use deterministic math tools.',
-      toolHint: 'Math Core',
+      title: 'Precision Math Calculation',
+      query: 'Multiply 1420 by 68 and add 5340',
+      toolHint: 'Math Engine',
       icon: Calculator,
       color: 'text-amber-400',
-    },
-    {
-      title: 'Autonomous Multi-Hop',
-      query: 'Who was Satoshi Nakamoto and what are the core principles of Bitcoin as documented in Wikipedia?',
-      toolHint: 'Multi-Tool',
-      icon: Atom,
-      color: 'text-sky-400',
     },
   ];
 

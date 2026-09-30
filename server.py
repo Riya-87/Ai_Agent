@@ -80,7 +80,9 @@ async def chat_endpoint(request: ChatRequest):
             tool_input = getattr(action, 'tool_input', '')
 
             display_name = tool_name
-            if "wikipedia" in tool_name.lower():
+            if "live_web" in tool_name.lower() or "web_search" in tool_name.lower():
+                display_name = "Live Web Search"
+            elif "wikipedia" in tool_name.lower():
                 display_name = "Wikipedia"
             elif "tavily" in tool_name.lower():
                 display_name = "Tavily Search"
