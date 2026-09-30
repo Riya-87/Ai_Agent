@@ -104,6 +104,26 @@ def multiply(a: float, b: float) -> float:
     return float(a) * float(b)
 
 
+def normalize_query(q: str) -> str:
+    """Normalize abbreviations, ordinals, and question structures."""
+    text = q.lower().strip(" ?.")
+    # Strip question intros
+    text = re.sub(r'^(who is|who was|who were|what is|what was|tell me about|explain|according to wikipedia)\s+', '', text, flags=re.IGNORECASE).strip()
+    
+    # Normalize ordinals
+    text = re.sub(r'\b1st\b', 'first', text)
+    text = re.sub(r'\b2nd\b', 'second', text)
+    text = re.sub(r'\b3rd\b', 'third', text)
+    text = re.sub(r'\b4th\b', 'fourth', text)
+    
+    # Normalize titles & phrases
+    text = re.sub(r'\bprime minister\b', 'pm', text)
+    text = re.sub(r'\bchief minister\b', 'cm', text)
+    text = re.sub(r'\bof the\b', 'of', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
 @tool
 def wikipedia_search(query: str) -> str:
     """Search Wikipedia for factual information, encyclopedic knowledge, biographies, places, and concepts.
@@ -114,13 +134,16 @@ def wikipedia_search(query: str) -> str:
     Returns:
         str: Summary text from Wikipedia.
     """
-    clean_q = query.lower().strip(" ?.")
-    clean_q = re.sub(r'^(who is|who was|what is|tell me about|explain|according to wikipedia)\s+', '', clean_q).strip()
+    clean_q = normalize_query(query)
 
     # 1. Check knowledge base sorted by key length descending (most specific match first)
     sorted_keys = sorted(KNOWLEDGE_BASE.keys(), key=len, reverse=True)
     for key in sorted_keys:
-        if key == clean_q or key in clean_q:
+        norm_key = normalize_query(key)
+        if norm_key == clean_q or norm_key in clean_q:
+            # Avoid false positive matching current when historical requested
+            if "first" in clean_q and "first" not in norm_key:
+                continue
             return KNOWLEDGE_BASE[key]
 
     # 2. Try online Wikipedia API query
